@@ -341,9 +341,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\bh-OrleansSiloHost - Web Deploy.pubxml" />
     <None Include="Properties\webjob-publish-settings.json" />
