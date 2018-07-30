@@ -69,7 +69,7 @@ namespace OrleansSiloHost
                     opt.SiloListeningEndpoint = new IPEndPoint(IPAddress.Any, siloPort);
                     opt.SiloPort = siloPort;
                 })
-                .UseAzureStorageClustering(opt => opt.ConnectionString = ConfigurationManager.AppSettings[@"ClusterStorageConnectionString"])
+                .UseAzureStorageClustering(opt => opt.ConnectionString = ConfigurationManager.ConnectionStrings[@"ClusterStorageConnectionString"].ConnectionString)
                 .ConfigureApplicationParts(mgr => mgr.AddApplicationPart(typeof(GreetGrain).Assembly).WithReferences())
                 .ConfigureLogging(opt => opt.AddConsole());
 
