@@ -5,33 +5,17 @@ For reference the discussions which spurred this experiment can be found in [Dur
 
 This sample was born out of [Orleans' AzureWorkerRoleSample](https://github.com/dotnet/orleans/tree/master/Samples/2.0/AzureWorkerRoleSample).
 
-In the interest of "modernization" you can find this same functionality implemented as an [Azure Webjob](tree/webjob) and [Service Fabric Guest Executable](tree/sf-guest-exec) in this repo as well.
+> Important Note: Webjob implementation of an Orleans Silo doens't work because you can't open specific ports in Azure App Services to point to the executable running in the webjob. Sorry!
 
 ## Instructions
-1. Create an Azure Storage **Classic** Storage account in your Azure subscription:
+1. Create a general purpose Azure Storage Storage account in your Azure subscription. Grab the primary connection string for it; you'll need this in a minute.
+1. Create an Application Insights instance in your Azure Subscription. Grab the Instrumentation Key for it; you'll also need this in a minute.
+1. Open [OrleansAsAService.sln](OrleansAsAService.sln) in Visual Studio
+1. Put the storage connection string in the appropriate place of OrleansSiloHost's App.config file:
 
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/fa707dd9.png)
-
-Grab the primary connection string for it; you'll need this in a minute
-
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/2018-07-27_22-21-47.png)
-
-Also grab the DNS hostname of this instance:
-
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/2018-07-27_22-44-40.png)
-
-2. Create an Application Insights instance in your Azure Subscription:
-
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/ac7964ab.png)
-
-Grab the Instrumentation Key for it; you'll also need this in a minute
-
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/2018-07-27_22-23-12.png)
-
-3. Open [OrleansAsAService.sln](OrleansAsAService.sln) in Visual Studio
-1. Put the storage connection string & app insights instrumentation key in the appropriate places of [ServiceConfiguration.Cloud.cscfg](SiloDeploy/ServiceConfiguration.Cloud.cscfg):
-
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/37bd7a7c.png)
+```xml
+<add name="ClusterStorageConnectionString" connectionString="UseDevelopmentStorage=true"/>
+```
 
 and `local.settings.json` of the FunctionsClient project. You'll have to create this from scratch, so here's a template:
 ```js
@@ -45,22 +29,11 @@ and `local.settings.json` of the FunctionsClient project. You'll have to create 
 }
 ```
 
-5. Deploy the `SiloDeploy` project as a Cloud Service to Azure by right-clicking it and choosing `Publish...`:
+5. Deploy OrleansSiloHost as an Azure Webjob by right-clicking it and choosing `Publish as Azure Webjob...`:
 
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/d3a695fb.png)
+![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/30/5699e905.png)
 
-then going through the Wizard:
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/2018-07-27_21-37-03.png)
-
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/2018-07-27_21-40-25.png)
-
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/2018-07-27_21-41-51.png)
-
-Go to 'Advanced Settings' and choose the Storage Account you created in Step 1, then click Publish. Deployment takes quite some time, but you can monitor it in the Microsoft Azure Activity Log window w/in VS:
-
-![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/d9d15d9a.png)
-
-6. Once deployed, grab the DNS hostname of your new Cloud Service, and enter this in to the `CloudServiceDnsName` value in [ServiceConfiguration.Cloud.cscfg](SiloDeploy/ServiceConfiguration.Cloud.cscfg):
+6. Once deployed, grab the DNS hostname of your new App Service instance, and enter this in to the `CloudServiceDnsName` value in [ServiceConfiguration.Cloud.cscfg](SiloDeploy/ServiceConfiguration.Cloud.cscfg):
 
 ![](https://brandonhmsdnblog.blob.core.windows.net/images/2018/07/28/2018-07-27_22-44-40.png)
 
