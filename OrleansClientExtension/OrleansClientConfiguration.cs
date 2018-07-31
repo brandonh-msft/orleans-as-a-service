@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Hosting;
+using Orleans.Runtime;
 
 namespace OrleansClientExtension
 {
@@ -39,11 +40,12 @@ namespace OrleansClientExtension
         class GrainFactoryAsyncBindingConverter : IAsyncConverter<OrleansClientAttribute, IGrainFactory>
         {
             private static IClusterClient _instance;
-
+            private readonly ExtensionConfigContext _context;
             private readonly ILogger _logger;
 
             public GrainFactoryAsyncBindingConverter(ExtensionConfigContext context)
             {
+                _context = context;
                 _logger = context.Config.LoggerFactory.CreateLogger(this.GetType().Name);
             }
 
@@ -56,8 +58,8 @@ namespace OrleansClientExtension
                     var builder = new ClientBuilder()
                         .Configure<ClusterOptions>(options =>
                         {
-                            options.ClusterId = @"ForFunctions";
-                            options.ServiceId = @"AzureFunctionsSample";
+                            options.ClusterId = attrib.ClusterIdSetting;
+                            options.ServiceId = _context.Config.HostId;
                         })
                         .UseAzureStorageClustering(opt => opt.ConnectionString = attrib.ClusterStorageConnectionStringSetting)
                         .ConfigureApplicationParts(parts =>
@@ -85,6 +87,11 @@ namespace OrleansClientExtension
                         }
                         else
                         {
+                            if (ex is SiloUnavailableException)
+                            {
+                                _logger.LogError(ex, $@"Unable to find/connect to an Orleans silo for cluster '{attrib.ClusterIdSetting}' - double check this matches the cluster your silo(s) are deployed to.");
+                            }
+
                             return false;
                         }
                     });

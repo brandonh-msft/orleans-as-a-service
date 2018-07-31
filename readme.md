@@ -7,6 +7,8 @@ This sample was born out of [Orleans' AzureWorkerRoleSample](https://github.com/
 
 > Important Note: Webjob implementation of an Orleans Silo doens't work because you can't open specific ports in Azure App Services to point to the executable running in the webjob. Sorry!
 
+**This branch showcases using an Azure Function Input Binding to remove the boilerplate involved in creating an Orleans Client & connecting to a Silo**
+
 ## Instructions
 1. Create a general purpose Azure Storage Storage account in your Azure subscription. Grab the primary connection string for it; you'll need this in a minute.
 1. Create an Application Insights instance in your Azure Subscription. Grab the Instrumentation Key for it; you'll also need this in a minute.
@@ -24,7 +26,8 @@ and `local.settings.json` of the FunctionsClient project. You'll have to create 
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "APPINSIGHTS_INSTRUMENTATIONKEY": "xxx",
-    "ClusterStorageConnectionString": "conn_string"
+    "ClusterStorageConnectionString": "conn_string",
+    "ClusterId": "AzureFunctionSample"
   }
 }
 ```

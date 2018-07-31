@@ -6,13 +6,17 @@ namespace OrleansClientExtension
     [Binding, AttributeUsage(AttributeTargets.Parameter, AllowMultiple = true)]
     public class OrleansClientAttribute : Attribute
     {
-        public OrleansClientAttribute(string clusterStorageConnectionStringSetting)
+        public OrleansClientAttribute(string clusterStorageConnectionStringSetting, string clusterIdSetting)
         {
             this.ClusterStorageConnectionStringSetting = clusterStorageConnectionStringSetting;
+            this.ClusterIdSetting = clusterIdSetting;
         }
 
         [AppSetting(Default = @"ClusterStorageConnectionString")]
-        public string ClusterStorageConnectionStringSetting { get; private set; }
+        public string ClusterStorageConnectionStringSetting { get; }
+
+        [AppSetting]
+        public string ClusterIdSetting { get; }
 
         /// <summary>
         /// Gets or sets the orleans grain interface types.

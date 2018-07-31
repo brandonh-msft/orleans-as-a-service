@@ -15,7 +15,7 @@ namespace FunctionClient
     {
         [FunctionName("Greet")]
         public static async Task<IActionResult> GreetAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post")]HttpRequest req,
-            [OrleansClient(@"ClusterStorageConnectionString", OrleansGrainInterfaceTypes = new Type[] { typeof(IGreetGrain) })]IGrainFactory orleansClient,
+            [OrleansClient(@"ClusterStorageConnectionString", @"ClusterId", OrleansGrainInterfaceTypes = new Type[] { typeof(IGreetGrain) })]IGrainFactory orleansClient,
             TraceWriter log)
         {
             string to = null, from = null;

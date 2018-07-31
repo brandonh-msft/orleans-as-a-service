@@ -53,8 +53,8 @@ namespace OrleansSiloHost
             var builder = new SiloHostBuilder()
                 .Configure<ClusterOptions>(options =>
                 {
-                    options.ClusterId = @"ForFunctions";
-                    options.ServiceId = @"AzureFunctionsSample";
+                    options.ClusterId = ConfigurationManager.AppSettings[@"ClusterId"];
+                    options.ServiceId = System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
                 })
                 .Configure<EndpointOptions>(opt =>
                 {
